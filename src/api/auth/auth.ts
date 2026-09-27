@@ -1,0 +1,1 @@
+export * as adminAuth from './authsuperAdmin'
