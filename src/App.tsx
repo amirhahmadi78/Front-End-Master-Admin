@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 
 import { useAuth } from "./context/AuthContext";
 import LoginPage from "./components/auth/loginPage";
@@ -8,11 +8,18 @@ import RegisterPage from "./components/auth/registerPage";
 import { LoadingOverlay } from "./components/loadingOverlay/LoadingOverlay";
 import ClinicsPage from "./components/clinics/ClinicPage";
 import ClinicDetailPage from "./components/clinics/oneClinic/ClinicDetailsPage";
-
+import LayoutDashboard from "./components/layout/Layout";
+import ExerciseManagerPanel from "./components/exercises/exerciseManagerPanel";
+import ExerciseForm from "./components/exercises/exerciseForm";
+import ExerciseSheetListPage from "./components/exercise-sheet/ExerciseSheetListPage";
+import ExerciseSheetFormPage from "./components/exercise-sheet/ExerciseSheetFormPage";
+import { AssessmentTemplatesPanel } from "./components/systematicAssessments/main";
+import { AssessmentTemplateCreateForm } from "./components/systematicAssessments/createSystematicAssessment";
 
 
 function App() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading ,user} = useAuth();
+  const navigate=useNavigate()
   if (isLoading) {
     return (
       <div
@@ -54,6 +61,7 @@ function App() {
             )
           }
         />
+
         <Route
           path="/register"
           element={
@@ -64,24 +72,82 @@ function App() {
             )
           }
         />
-    
-          <Route path="dashboard" element={<ClinicsPage />} />
-           
-  
-          <Route path="/clinics/:id" element={<ClinicDetailPage />} />
+        <Route path="/" element={<LayoutDashboard />}>
 
 
 
+        <Route path="dashboard" element={<ClinicsPage />} />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
-    
+        <Route path="/clinics/:id" element={<ClinicDetailPage />} />
+        
+
+         <Route path="exercises">
+            {/* مسیر فرزند: پارامتر Id اجباری است */}
+            <Route index element={<ExerciseManagerPanel currentTherapistId={user?._id} onCreateExercise={()=>navigate('/exercises/new') } onEditExercise={ (exercise:IExercise)=>navigate("/exercises/edit/"+exercise._id) }/>}/>
+            <Route
+              path="edit/:id/"
+              element={<ExerciseForm onSuccess={()=>navigate("/exercises") } onCancel={()=>navigate("/exercises")} />}
+            />
+            <Route
+              path="new/"
+              element={<ExerciseForm onSuccess={()=>navigate("/exercises") } onCancel={()=>navigate("/exercises")}  />}
+            />
+          </Route>
+
+              {/* <Route path="exercisesheets">
+
+            <Route index element={<TherapistExerciseSheets />}/>
+
+          </Route> */}
+          <Route
+  path="/exercise-sheets"
+  element={
+    <ExerciseSheetListPage
+      currentTherapistId={user?._id}
+    />
+  }
+/>
+
+<Route
+  path="/exercise-sheets/create"
+  element={
+    <ExerciseSheetFormPage isNew={false}
+
+    />
+  }
+/>
+
+<Route
+  path="/exercise-sheets/:id/edit"
+  element={
+    <ExerciseSheetFormPage
+
+            isNew={false}
+    />
+
+  }
+/>
+
+       <Route path="systematicassessments">
+            {/* مسیر فرزند: پارامتر Id اجباری است */}
+            <Route index element={<AssessmentTemplatesPanel/>}/>
+            <Route
+              path="edit/:id/"
+              element={<AssessmentTemplateCreateForm />}
+            />
+            <Route
+              path="new/"
+              element={<AssessmentTemplateCreateForm />}
+            />
+          </Route>
+</Route>
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
 }
 
 export default App;
-
 
 //   return (
 //     <>
@@ -120,7 +186,7 @@ export default App;
 //         <Route path="/" element={<LayoutDashboard />}>
 //           <Route path="dashboard" element={<MainTherapist />} />
 //           <Route path="leaves" element={<LeaveRequests />} />
-        
+
 //               <Route path="systematicassessments">
 //             {/* مسیر فرزند: پارامتر Id اجباری است */}
 //             <Route index element={<AssessmentTemplatesPanel/>}/>
@@ -148,9 +214,9 @@ export default App;
 //           </Route>
 
 //               {/* <Route path="exercisesheets">
-        
+
 //             <Route index element={<TherapistExerciseSheets />}/>
-           
+
 //           </Route> */}
 //           <Route
 //   path="/exercise-sheets"
@@ -164,7 +230,7 @@ export default App;
 // <Route
 //   path="/exercise-sheets/create"
 //   element={
-//     <ExerciseSheetFormPage isNew={false}  
+//     <ExerciseSheetFormPage isNew={false}
 
 //     />
 //   }
@@ -177,7 +243,7 @@ export default App;
 
 //             isNew={false}
 //     />
-    
+
 //   }
 // />
 
@@ -185,11 +251,11 @@ export default App;
 //   path="/exercise-sheets/:id/new"
 //   element={
 //     <ExerciseSheetFormPage
-   
+
 //       isNew={true}
-   
+
 //     />
-    
+
 //   }
 // />
 
@@ -197,32 +263,29 @@ export default App;
 //   path="/exercise-sheets/:id/new/:patientId"
 //   element={
 //     <ExerciseSheetFormPage
-   
+
 //       isNew={true}
-   
+
 //     />
-    
-    
+
 //   }
 // />
 // <Route
 //   path="/exercise-sheets/new/:patientId"
 //   element={
 //     <ExerciseSheetFormPage
-   
+
 //       isNew={true}
-   
+
 //     />
-    
-    
+
 //   }
 // />
 //           <Route path="patientprofile">
 //             {/* مسیر فرزند: پارامتر Id اجباری است */}
-           
+
 //  <Route index element={<MainPatientProfile/>}/>
- 
- 
+
 //        <Route
 //               path=":Id/assessments/select"
 //               element={<SystematicAssessmentSelector/>}

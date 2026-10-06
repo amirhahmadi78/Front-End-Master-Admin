@@ -13,7 +13,8 @@ import { useAuth } from "../../context/AuthContext";
 const LayoutDashboard = () => {
   const { user, logout } = useAuth();
 
-  const fullName = user?.firstName + " " + user?.lastName || "";
+
+  const fullName = user?.fullName  || "";
 
   const navigate = useNavigate();
 
@@ -77,22 +78,8 @@ const LayoutDashboard = () => {
               >
                 داشبورد
               </li>
-              <li
-                onClick={() => {
-                  navigate("/patientprofile");
-                  setIsSidebarOpen(false);
-                }}
-              >
-                پرونده ی درمانی
-              </li>
-              <li
-                onClick={() => {
-                  navigate("/leaves");
-                  setIsSidebarOpen(false);
-                }}
-              >
-                مرخصی
-              </li>
+             
+            
                     <li
                 onClick={() => {
                   navigate("/systematicassessments");

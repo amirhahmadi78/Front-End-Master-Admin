@@ -20,6 +20,8 @@ import StatsCards from "./StatsCards";
 import AdminFormModal from "./AdminFormModal";
 import type { IClinicAdmin, AdminRole } from "../../../types/clinicDetails";
 import { AlertSwal } from "../../../utils/errorSwal";
+import { FaSync } from "react-icons/fa";
+import { useSyncLibrayClinic } from "../../../hooks/sync";
 
 const ROLE_LABELS: Record<AdminRole, string> = {
   Admin: "مدیر کل",
@@ -39,7 +41,7 @@ const ROLE_COLORS: Record<AdminRole, string> = {
 const ClinicDetailPage: React.FC = () => {
   const { id: clinicId = "" } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
+const {mutateAsync:SyncLibrary}= useSyncLibrayClinic()
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<IClinicAdmin | null>(null);
 
@@ -58,6 +60,8 @@ const ClinicDetailPage: React.FC = () => {
     setEditing(a);
     setModalOpen(true);
   };
+
+
 
   const handleDelete = async (a: IClinicAdmin) => {
     const ok = await AlertSwal.doYouWant(
@@ -93,7 +97,21 @@ const ClinicDetailPage: React.FC = () => {
           </div>
 
           <button
-            onClick={handleCreate}
+           onClick={async()=>{
+           const res= await AlertSwal.doYouWant("آیا میخواهید تمام تمرینات و ارزیابی ها به این کلینیک سینک شود؟")
+           if (res.isConfirmed){
+    
+            
+       SyncLibrary(clinicId)}}
+           }
+     
+
+            className="flex items-center gap-2 rounded-2xl bg-linear-to-l from-sky-500 via-cyan-500 to-teal-500 px-5! py-2.5! text-sm font-bold text-white shadow-lg shadow-cyan-200/60 transition hover:scale-[1.02] active:scale-95"
+          >
+            <FaSync className="h-4 w-4" />
+سینک کتابخانه          </button>
+            <button
+                  onClick={handleCreate}
             className="flex items-center gap-2 rounded-2xl bg-linear-to-l from-sky-500 via-cyan-500 to-teal-500 px-5! py-2.5! text-sm font-bold text-white shadow-lg shadow-cyan-200/60 transition hover:scale-[1.02] active:scale-95"
           >
             <Plus className="h-4 w-4" />
