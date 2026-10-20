@@ -8,6 +8,7 @@ import type { LoginRequestDto } from "../../types/auth";
 
 import "./login.css"
 import { useAuth } from "../../context/AuthContext";
+import { AlertSwal } from "../../utils/errorSwal";
 const LoginPage =  () => {
 
   // const { user,isAuthenticated,isLoading } = useAuth();
@@ -38,7 +39,8 @@ const LoginPage =  () => {
       navigate('/dashboard')
 
     } catch (error) {
-      alert("ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.");
+      AlertSwal.backEndError(error,"ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.")
+      // alert("ورود ناموفق بود. لطفاً اطلاعات را بررسی کنید.");
 
     }
   };
